@@ -7,7 +7,7 @@ from db import db
 
 
 def create_app(bd_url=None):
-    app = Flask(__name__)
+    app = Flask(__name__, static_folder='dist')
     CORS(app, ressources={r"/*":{'originis':"*"}})
     app.config.from_object(__name__)
 
@@ -93,9 +93,17 @@ def create_app(bd_url=None):
 
     return app
 
-if __name__ == '__main__':
+
+
+def create_dep_app() : 
     app = create_app()
     with app.app_context():
         db.create_all()
+    return app
+
+if __name__ == '__main__':
     
-    app.run(debug=True)
+    app = create_app()
+    with app.app_context():
+        db.create_all()
+    app.run(host='0.0.0.0', port=5000, debug=True)
