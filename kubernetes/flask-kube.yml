@@ -1,20 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: flask-deployment
+  name: flask-app
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: flask
+      app: flask-app
   template:
     metadata:
       labels:
-        app: flask
+        app: flask-app
     spec:
       containers:
-        - name: flask-container
-          image: hafidd34/back-end-flask:v1
+        - name: flask-app
+          image: hafidd34/back-end-flask:v10
+          ports:
+            - containerPort: 5000
 
 ---
 
@@ -24,7 +26,7 @@ metadata:
   name: flask-service
 spec:
   selector:
-    app: flask
+    app: flask-app
   ports:
     - protocol: TCP
       port: 5000

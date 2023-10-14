@@ -65,7 +65,7 @@ export default {
     },
 
     add_blog(blog) {
-      const path = "http://localhost:5000/create_blog";
+      const path = "/api/create_blog"
       axios
         .post(path, blog)
         .then((resp) => {

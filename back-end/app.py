@@ -1,5 +1,5 @@
-from flask import Flask, jsonify, request
-from flask_cors import CORS
+from flask import Flask, jsonify, request, make_response
+from flask_cors import CORS, cross_origin
 import uuid
 from models import Blogs
 
@@ -7,8 +7,12 @@ from db import db
 
 
 def create_app(bd_url=None):
-    app = Flask(__name__, static_folder='dist')
-    CORS(app, ressources={r"/*":{'originis':"*"}})
+    # app = Flask(__name__, static_folder='dist')
+    app = Flask(__name__)
+    # CORS(app, resources={r"/api/*": {"origins": "http://4.232.9.93"}})
+    # app.config['CORS_HEADERS'] = 'application/json'
+    # CORS(app, resources={r"/*": {"origins": "http://4.232.9.93"}})
+    CORS(app)
     app.config.from_object(__name__)
 
     app.config["SQLALCHEMY_DATABASE_URI"] = bd_url or 'sqlite:///database.db'
@@ -37,8 +41,14 @@ def create_app(bd_url=None):
 
     # ]
 
-    @app.route('/blogs', methods=['GET'])
+    @app.route('/blogs', methods=['GET', 'OPTIONS'])
+
     def get_blogs():
+        if request.method == 'OPTIONS':
+            response = make_response()
+            response.headers.add('Access-Control-Allow-Methods', 'POST')
+            response.headers.add('Access-Control-Allow-Headers', 'Content-Type')
+            return response
 
         try: 
             blogs = Blogs.query.all()
@@ -64,9 +74,15 @@ def create_app(bd_url=None):
             return jsonify(response), 500
 
 
-    @app.route('/create_blog', methods=["POST"])
-
+    @app.route('/create_blog', methods=['POST', 'OPTIONS'])
     def add_blog():
+
+        if request.method == 'OPTIONS':
+            response = make_response()
+            response.headers.add('Access-Control-Allow-Methods', 'POST')
+            response.headers.add('Access-Control-Allow-Headers', 'Content-Type')
+            return response
+
         response_object = {'status': 'success'}
         if request.method == "POST":
             post_data = request.get_json()

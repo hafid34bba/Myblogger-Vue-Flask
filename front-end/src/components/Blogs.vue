@@ -46,7 +46,7 @@ export default {
 
   methods: {
     get_blogs() {
-      const path = "http://localhost:5000/blogs";
+      const path = "/api/blogs";
       axios
         .get(path)
         .then((resp) => {
